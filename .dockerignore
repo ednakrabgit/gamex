@@ -1,0 +1,7 @@
+.git
+.gitignore
+.vscode
+__pycache__
+*.docx
+scripts/
+parsed_sheets_raw.json
