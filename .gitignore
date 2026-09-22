@@ -1,0 +1,5 @@
+# System & temporary files
+.vscode/
+__pycache__/
+*.pyc
+parsed_sheets_raw.json

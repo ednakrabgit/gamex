@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizQuest - เกมส์ทำข้อสอบออนไลน์ ป.1 และประลองความรู้</title>
+    
+    <!-- Google Fonts: Prompt & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Prompt:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Canvas Confetti for victory celebrations -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Custom Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/certificate.css">
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="nav-brand" onclick="app.switchView('home')">
+            <span class="brand-icon">🎮</span>
+            <span>QuizQuest</span>
+        </div>
+
+        <div class="player-status-bar">
+            <div class="player-pill" onclick="app.openProfileModal()" title="คลิกเพื่อแก้ไขโปรไฟล์">
+                <span id="navPlayerAvatar" style="font-size: 1.2rem;">🧙‍♂️</span>
+                <span id="navPlayerName">ฮีโร่น้อยนักปราชญ์</span>
+                <span id="navPlayerLevel" class="grade-badge" style="padding: 2px 8px; font-size: 0.75rem;">Lv.1</span>
+            </div>
+            <div class="player-pill">
+                <span>🪙</span>
+                <span id="navPlayerCoins">50</span>
+            </div>
+        </div>
+
+        <div class="nav-controls">
+            <button id="speechToggleBtn" class="icon-btn" onclick="app.toggleSpeech()" title="เปิด/ปิดการอ่านโจทย์เสียงภาษาไทย">🗣️</button>
+            <button id="soundToggleBtn" class="icon-btn" onclick="app.toggleSound()" title="เปิด/ปิดเสียงเอฟเฟกต์">🔊</button>
+            <button id="themeToggleBtn" class="icon-btn" onclick="app.toggleTheme()" title="สลับธีม สว่าง/มืด">🌓</button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+        <!-- Top Navigation Tabs -->
+        <nav class="view-tabs">
+            <button class="tab-btn active" data-view="home" onclick="app.switchView('home')">
+                <span>🏠</span> หน้าแรก
+            </button>
+            <button class="tab-btn" data-view="adventure" onclick="app.switchView('adventure')">
+                <span>🗺️</span> ตะลุยด่าน 50 ชุดวิชา
+            </button>
+            <button class="tab-btn" data-view="boss" onclick="app.switchView('boss')">
+                <span>👾</span> ศึกสู้บอส
+            </button>
+            <button class="tab-btn" data-view="custom" onclick="app.switchView('custom')">
+                <span>✏️</span> สตูดิโอสร้างข้อสอบ
+            </button>
+            <button class="tab-btn" data-view="history" onclick="app.switchView('history')">
+                <span>📊</span> สมุดสถิติ & ผลสอบ
+            </button>
+        </nav>
+
+        <!-- VIEW 1: HOME / LOBBY -->
+        <section id="view_home" class="view-panel">
+            <div class="hero-banner animate-fade-in">
+                <div>
+                    <h1 class="hero-title">ยินดีต้อนรับสู่ QuizQuest! 🌟</h1>
+                    <p class="hero-subtitle">
+                        เรียนรู้และฝึกทำข้อสอบออนไลน์แสนสนุก พร้อมตรวจคะแนนจริง เฉลยละเอียดทุกข้อ และรับใบประกาศนียบัตรเกียรติคุณ
+                    </p>
+                </div>
+                <div>
+                    <button class="btn btn-gold" onclick="app.startExamSimulation()" style="font-size: 1.1rem; padding: 14px 28px;">
+                        📝 เริ่มจำลองสอบปลายภาค
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mode Selection Grid -->
+            <div class="mode-grid">
+                <div class="mode-card" onclick="app.switchView('adventure')">
+                    <div>
+                        <div class="mode-icon">🗺️</div>
+                        <h3 class="mode-title">โหมดตะลุยด่าน (Adventure)</h3>
+                        <p class="mode-desc">ฝึกทำข้อสอบ 50 ชุดวิชา ครบทุกหมวด ป.1 สะสมดาวและเลเวล</p>
+                    </div>
+                    <span class="mode-badge" style="background: rgba(79, 70, 229, 0.2); color: #818cf8;">50 ชุดวิชาจริง</span>
+                </div>
+
+                <div class="mode-card" onclick="app.switchView('boss')">
+                    <div>
+                        <div class="mode-icon">👾</div>
+                        <h3 class="mode-title">โหมดศึกสู้บอส (Boss Battle)</h3>
+                        <p class="mode-desc">ตอบข้อสอบสร้างดาเมจ ปราบมอนสเตอร์ประจำวิชา คอมโบไฟลุก 🔥</p>
+                    </div>
+                    <span class="mode-badge" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">โหมดสนุกเร้าใจ</span>
+                </div>
+
+                <div class="mode-card" onclick="app.startExamSimulation()">
+                    <div>
+                        <div class="mode-icon">📝</div>
+                        <h3 class="mode-title">จำลองสอบปลายภาคเสมือนจริง</h3>
+                        <p class="mode-desc">คละข้อสอบ 25 ข้อจากทุกวิชา พร้อมจับเวลาและตัดเกรด A-F จริง</p>
+                    </div>
+                    <span class="mode-badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">ตัดเกรดจริง</span>
+                </div>
+
+                <div class="mode-card" onclick="app.startSpeedRush()">
+                    <div>
+                        <div class="mode-icon">⚡</div>
+                        <h3 class="mode-title">ท้าประลองคิดเร็ว (Speed Rush)</h3>
+                        <p class="mode-desc">ตอบให้ได้มากที่สุดใน 60 วินาที ตอบถูกเพิ่มเวลา สะสมแต้มสูงสุด</p>
+                    </div>
+                    <span class="mode-badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">แข่งกับเวลา</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: ADVENTURE MAP (50 SHEETS) -->
+        <section id="view_adventure" class="view-panel" style="display: none;">
+            <div class="section-header">
+                <h2 class="section-title">🗺️ คลังข้อสอบ 50 ชุดวิชา (ป.1 ภาคเรียนที่ 1/2569)</h2>
+            </div>
+
+            <!-- Subject Filter Row -->
+            <div class="subject-filter-row">
+                <button class="filter-chip active" onclick="app.setSubjectFilter('all', this)">⭐ ทั้งหมด (50 ชุด)</button>
+                <button class="filter-chip" onclick="app.setSubjectFilter('math', this)">🔢 คณิตศาสตร์</button>
+                <button class="filter-chip" onclick="app.setSubjectFilter('thai', this)">📖 ภาษาไทย</button>
+                <button class="filter-chip" onclick="app.setSubjectFilter('science', this)">🔬 วิทยาศาสตร์</button>
+                <button class="filter-chip" onclick="app.setSubjectFilter('english', this)">🔤 ภาษาอังกฤษ</button>
+                <button class="filter-chip" onclick="app.setSubjectFilter('social', this)">🌍 สังคมศึกษา</button>
+                <button class="filter-chip" onclick="app.setSubjectFilter('history', this)">🏛️ ประวัติศาสตร์</button>
+                <button class="filter-chip" onclick="app.setSubjectFilter('darun', this)">📜 ดรุณศึกษา</button>
+                <button class="filter-chip" onclick="app.setSubjectFilter('health', this)">🍎 สุขศึกษา/การงาน</button>
+            </div>
+
+            <!-- Sheets Grid Container -->
+            <div id="adventureSheetsGrid" class="sheets-grid"></div>
+        </section>
+
+        <!-- VIEW 3: BOSS BATTLE SELECTION -->
+        <section id="view_boss" class="view-panel" style="display: none;">
+            <div class="section-header">
+                <h2 class="section-title">👾 เลือกบอสประจำวิชาที่ต้องการประลอง</h2>
+            </div>
+            <div class="mode-grid">
+                <div class="mode-card text-center" onclick="app.startBossBattle('math')">
+                    <div style="font-size: 3.5rem;">🐲</div>
+                    <h3 class="mode-title">ราชามังกรคณิตศาสตร์</h3>
+                    <p class="mode-desc">พลังชีวิต 1,000 HP | จุดอ่อน: บวกลบเลขเร็ว</p>
+                    <button class="btn btn-primary" style="margin-top: 10px;">⚔️ ท้าดวล</button>
+                </div>
+                <div class="mode-card text-center" onclick="app.startBossBattle('thai')">
+                    <div style="font-size: 3.5rem;">👹</div>
+                    <h3 class="mode-title">อสูรยักษ์พยัญชนะ</h3>
+                    <p class="mode-desc">พลังชีวิต 900 HP | จุดอ่อน: สระและวรรณยุกต์</p>
+                    <button class="btn btn-primary" style="margin-top: 10px;">⚔️ ท้าดวล</button>
+                </div>
+                <div class="mode-card text-center" onclick="app.startBossBattle('science')">
+                    <div style="font-size: 3.5rem;">🤖</div>
+                    <h3 class="mode-title">ไซบอร์กนิวเคลียส</h3>
+                    <p class="mode-desc">พลังชีวิต 950 HP | จุดอ่อน: วิทยาศาสตร์พืชและสัตว์</p>
+                    <button class="btn btn-primary" style="margin-top: 10px;">⚔️ ท้าดวล</button>
+                </div>
+                <div class="mode-card text-center" onclick="app.startBossBattle('english')">
+                    <div style="font-size: 3.5rem;">🦅</div>
+                    <h3 class="mode-title">พญานกฟีนิกซ์ Vocabulary</h3>
+                    <p class="mode-desc">พลังชีวิต 850 HP | จุดอ่อน: Grammar & Word Bank</p>
+                    <button class="btn btn-primary" style="margin-top: 10px;">⚔️ ท้าดวล</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: CUSTOM QUIZ STUDIO -->
+        <section id="view_custom" class="view-panel" style="display: none;">
+            <div class="section-header">
+                <h2 class="section-title">✏️ สตูดิโอสร้างและนำเข้าชุดข้อสอบเอง</h2>
+                <button class="btn btn-primary" onclick="app.openCreateQuizModal()">➕ สร้างชุดข้อสอบใหม่</button>
+            </div>
+            <div id="customSetsList"></div>
+        </section>
+
+        <!-- VIEW 5: HISTORY & PERFORMANCE -->
+        <section id="view_history" class="view-panel" style="display: none;">
+            <div class="section-header">
+                <h2 class="section-title">📊 สมุดบันทึกสถิติและประวัติการสอบ</h2>
+            </div>
+            <div id="historyContainer"></div>
+        </section>
+
+        <!-- VIEW 6: QUIZ ARENA (PLAYING SCREEN) -->
+        <section id="view_arena" class="view-panel arena-view" style="display: none;">
+            
+            <!-- Arena Topbar -->
+            <div class="arena-topbar">
+                <div>
+                    <div id="arenaSubjectTitle" style="font-weight: 700; font-size: 1.1rem;">วิชาคณิตศาสตร์</div>
+                    <div id="arenaScore" style="font-size: 0.85rem; color: var(--text-secondary);">คะแนน: 0</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div id="arenaCombo" class="combo-meter"></div>
+                    <div id="arenaTimer" class="timer-box">⏱️ 20s</div>
+                </div>
+            </div>
+
+            <!-- Boss Box (Active only in Boss Battle) -->
+            <div id="arenaBossBox" class="boss-arena-box" style="display: none;">
+                <div id="bossAvatar" class="boss-avatar">🐲</div>
+                <div id="bossName" class="boss-name">ราชามังกรคณิตศาสตร์</div>
+                <div id="bossWeakness" style="font-size: 0.8rem; color: #fca5a5;">จุดอ่อน: บวกลบเลขเร็ว</div>
+                <div class="hp-bar-outer">
+                    <div id="bossHPFill" class="hp-bar-fill" style="width: 100%;"></div>
+                </div>
+                <div id="bossHPTxt" style="font-size: 0.75rem; margin-top: 4px; font-weight: 700;">1000 / 1000 HP</div>
+            </div>
+
+            <!-- Lifelines Row -->
+            <div class="lifelines-row">
+                <button class="lifeline-btn" onclick="app.useLifeline('5050')" title="ตัด 2 ตัวเลือกที่ผิด">
+                    ✂️ 50:50 (<span id="cnt_5050">3</span>)
+                </button>
+                <button class="lifeline-btn" onclick="app.useLifeline('freeze')" title="หยุดเวลา 10 วินาที">
+                    ❄️ หยุดเวลา (<span id="cnt_freeze">3</span>)
+                </button>
+                <button class="lifeline-btn" onclick="app.useLifeline('hint')" title="ดูคำใบ้แนวคิด">
+                    💡 คำใบ้ (<span id="cnt_hint">3</span>)
+                </button>
+                <button class="lifeline-btn" onclick="app.useLifeline('shield')" title="ป้องกันตอบผิด 1 ครั้ง">
+                    🛡️ เกราะ (<span id="cnt_shield">2</span>)
+                </button>
+            </div>
+
+            <!-- Question Card -->
+            <div class="question-card animate-fade-in">
+                <div class="question-header">
+                    <span id="qCounter" class="q-counter">ข้อที่ 1 / 6</span>
+                    <button class="q-tts-btn" onclick="app.readCurrentQuestion()">
+                        🔊 ฟังเสียงโจทย์ภาษาไทย
+                    </button>
+                </div>
+
+                <div id="questionText" class="question-text">
+                    กำลังโหลดข้อสอบ...
+                </div>
+
+                <!-- Choices Container (Keys 1-4 supported) -->
+                <div id="choicesGrid" class="choices-grid"></div>
+
+                <!-- Instant Feedback -->
+                <div id="arenaFeedback"></div>
+            </div>
+
+            <div style="text-align: center; color: var(--text-muted); font-size: 0.8rem;">
+                💡 เคล็ดลับ: สามารถกดปุ่มตัวเลข 1, 2, 3, 4 บนคีย์บอร์ดเพื่อเลือกคำตอบได้ทันที
+            </div>
+        </section>
+
+        <!-- VIEW 7: REPORT & EVALUATION -->
+        <section id="view_report" class="view-panel" style="display: none;">
+            <div id="reportContent"></div>
+        </section>
+
+    </main>
+
+    <!-- MODAL 1: STEP-BY-STEP REVIEW & SOLUTIONS -->
+    <div id="reviewModal" class="modal-overlay">
+        <div class="modal-card">
+            <button class="modal-close" onclick="app.closeModal('reviewModal')">&times;</button>
+            <h2 style="margin-bottom: 18px; font-weight: 800;">🔍 ตรวจสอบคำตอบและเฉลยละเอียด</h2>
+            <div id="reviewListContent"></div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="app.closeModal('reviewModal')">ปิดหน้าต่างเฉลย</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: PRINTABLE CERTIFICATE -->
+    <div id="certificateModal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 850px;">
+            <button class="modal-close" onclick="app.closeModal('certificateModal')">&times;</button>
+            <div id="certificateContainer"></div>
+            <div style="display: flex; justify-content: center; gap: 14px; margin-top: 20px;">
+                <button class="btn btn-gold" onclick="reportGen.printCertificate()">🖨️ พิมพ์ / บันทึก PDF</button>
+                <button class="btn btn-outline" onclick="app.closeModal('certificateModal')">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: CREATE CUSTOM QUIZ -->
+    <div id="createQuizModal" class="modal-overlay">
+        <div class="modal-card">
+            <button class="modal-close" onclick="app.closeModal('createQuizModal')">&times;</button>
+            <h2 style="margin-bottom: 16px;">✏️ สร้างชุดข้อสอบใหม่</h2>
+            
+            <div style="margin-bottom: 12px;">
+                <label style="display: block; font-weight: 700; margin-bottom: 4px;">ชื่อชุดข้อสอบ</label>
+                <input type="text" id="customTitle" class="choice-btn" style="width: 100%;" placeholder="เช่น แบบทดสอบเก็บคะแนนคณิตศาสตร์">
+            </div>
+
+            <div style="margin-bottom: 12px;">
+                <label style="display: block; font-weight: 700; margin-bottom: 4px;">หมวดหมู่วิชา</label>
+                <input type="text" id="customSubject" class="choice-btn" style="width: 100%;" placeholder="เช่น คณิตศาสตร์ / ภาษาไทย">
+            </div>
+
+            <div style="margin-bottom: 12px;">
+                <label style="display: block; font-weight: 700; margin-bottom: 4px;">คำถามข้อที่ 1</label>
+                <textarea id="customQText" class="choice-btn" style="width: 100%; height: 70px;" placeholder="พิมพ์โจทย์คำถาม..."></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                <div>
+                    <label style="font-size: 0.85rem;">ตัวเลือก 1</label>
+                    <input type="text" id="customOpt1" class="choice-btn" style="width: 100%;" placeholder="ตัวเลือก 1">
+                </div>
+                <div>
+                    <label style="font-size: 0.85rem;">ตัวเลือก 2</label>
+                    <input type="text" id="customOpt2" class="choice-btn" style="width: 100%;" placeholder="ตัวเลือก 2">
+                </div>
+                <div>
+                    <label style="font-size: 0.85rem;">ตัวเลือก 3</label>
+                    <input type="text" id="customOpt3" class="choice-btn" style="width: 100%;" placeholder="ตัวเลือก 3">
+                </div>
+                <div>
+                    <label style="font-size: 0.85rem;">ตัวเลือก 4</label>
+                    <input type="text" id="customOpt4" class="choice-btn" style="width: 100%;" placeholder="ตัวเลือก 4">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+                <label style="display: block; font-weight: 700; margin-bottom: 4px;">คำตอบที่ถูกต้อง</label>
+                <select id="customCorrectOpt" class="choice-btn" style="width: 100%;">
+                    <option value="1">ตัวเลือกที่ 1</option>
+                    <option value="2">ตัวเลือกที่ 2</option>
+                    <option value="3">ตัวเลือกที่ 3</option>
+                    <option value="4">ตัวเลือกที่ 4</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 700; margin-bottom: 4px;">คำอธิบายและเฉลยละเอียด</label>
+                <input type="text" id="customExp" class="choice-btn" style="width: 100%;" placeholder="อธิบายเหตุผลของคำตอบ...">
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn btn-outline" onclick="app.closeModal('createQuizModal')">ยกเลิก</button>
+                <button class="btn btn-primary" onclick="app.saveNewCustomQuiz()">💾 บันทึกชุดข้อสอบ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: PLAYER PROFILE & AVATAR PICKER -->
+    <div id="profileModal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 500px;">
+            <button class="modal-close" onclick="app.closeModal('profileModal')">&times;</button>
+            <h2 style="margin-bottom: 16px; text-align: center;">🧙‍♂️ โปรไฟล์ผู้เล่น</h2>
+            
+            <div style="margin-bottom: 16px;">
+                <label style="display: block; font-weight: 700; margin-bottom: 6px;">ชื่อผู้สอบ / ผู้เล่น</label>
+                <input type="text" id="profilePlayerName" class="choice-btn" style="width: 100%; font-size: 1.1rem;" value="ฮีโร่น้อยนักปราชญ์">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 700; margin-bottom: 8px;">เลือกรูปประจำตัว (Avatar)</label>
+                <div style="display: flex; justify-content: center; gap: 12px; font-size: 2rem; flex-wrap: wrap;">
+                    <span style="cursor: pointer;" onclick="app.setAvatar('🧙‍♂️')">🧙‍♂️</span>
+                    <span style="cursor: pointer;" onclick="app.setAvatar('🦸‍♀️')">🦸‍♀️</span>
+                    <span style="cursor: pointer;" onclick="app.setAvatar('🧝‍♂️')">🧝‍♂️</span>
+                    <span style="cursor: pointer;" onclick="app.setAvatar('🦊')">🦊</span>
+                    <span style="cursor: pointer;" onclick="app.setAvatar('🐱')">🐱</span>
+                    <span style="cursor: pointer;" onclick="app.setAvatar('🚀')">🚀</span>
+                    <span style="cursor: pointer;" onclick="app.setAvatar('👑')">👑</span>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn btn-primary" style="width: 100%;" onclick="app.saveProfile()">บันทึกข้อมูล</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Javascript Modules -->
+    <script src="js/data/questions.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/speech.js"></script>
+    <script src="js/gameState.js"></script>
+    <script src="js/gameEngine.js"></script>
+    <script src="js/reportGenerator.js"></script>
+    <script src="js/customQuizEditor.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

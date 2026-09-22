@@ -1,0 +1,51 @@
+/* ==========================================================================
+   QuizQuest - Visual Animations & Effects
+   ========================================================================== */
+
+@keyframes pulseDanger {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.08); opacity: 0.8; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.35s ease forwards;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+}
+
+.animate-shake {
+    animation: shake 0.4s ease;
+}
+
+@keyframes bounceSuccess {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.animate-success {
+    animation: bounceSuccess 0.4s ease;
+}
+
+@keyframes floatBoss {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.boss-avatar {
+    display: inline-block;
+    animation: floatBoss 2.5s infinite ease-in-out;
+}
+
+/* Freeze effect */
+.frozen-screen {
+    filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.8)) hue-rotate(180deg);
+}
